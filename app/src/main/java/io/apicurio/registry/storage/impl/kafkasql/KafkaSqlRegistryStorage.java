@@ -1175,16 +1175,14 @@ public class KafkaSqlRegistryStorage extends ReadOnlyDelegatingStorage implement
     }
 
     /**
-     * Bypasses the Kafka journal and writes directly to SQL. This operation is triggered by a
-     * scheduled job that runs independently on every pod, so coordinating via the journal is
-     * unnecessary and would add bloat that slows down new-pod bootstrap.
-     *
      * @see io.apicurio.registry.storage.RegistryStorage#deleteAllOrphanedContent()
      */
-    @Override
-    public void deleteAllOrphanedContent() throws RegistryStorageException {
-        sqlStore.deleteAllOrphanedContent();
-    }
+     @Override
+     public void deleteAllOrphanedContent() throws RegistryStorageException {
+         var message = new DeleteAllOrphanedContent0Message();
+         var uuid = blockOnResult(submitter.submitMessage(message));
+         coordinator.waitForResponse(uuid);
+     }
 
     @Override
     public ContentWrapperDto getContentByReference(ArtifactReferenceDto reference) {

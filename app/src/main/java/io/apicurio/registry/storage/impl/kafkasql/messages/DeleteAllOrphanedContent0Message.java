@@ -10,10 +10,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * @deprecated No longer produced. Retained so that existing Kafka journal entries can still be consumed
- *             after an upgrade. Scheduled cleanup now bypasses the journal and writes directly to SQL.
+ * Dispatched to coordinate orphaned-content cleanup across all KafkaSQL replicas at the same
+ * journal offset, preventing Content ID divergence.
  */
-@Deprecated
 @NoArgsConstructor
 @Builder
 @Getter
